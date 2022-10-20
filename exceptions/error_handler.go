@@ -2,6 +2,7 @@ package exceptions
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"pretest-indihomesmart/internal/validator"
 	"pretest-indihomesmart/utils"
 )
 
@@ -11,9 +12,9 @@ func ErrorHandler(ctx *fiber.Ctx, err error) error {
 	var errors interface{}
 
 	switch err.(type) {
-	case ValidationError:
+	case validator.Error:
 		statusCode = 400
-		errors = err.(ValidationError).Errors
+		errors = err.(validator.Error).Errors
 
 	case *fiber.Error:
 		statusCode = err.(*fiber.Error).Code
@@ -22,6 +23,6 @@ func ErrorHandler(ctx *fiber.Ctx, err error) error {
 		statusCode = 500
 	}
 
-	return ctx.Status(statusCode).
-		JSON(utils.ErrorResponse(err.Error(), errors))
+	data := utils.ErrorResponse(err.Error(), errors)
+	return ctx.Status(statusCode).JSON(data)
 }

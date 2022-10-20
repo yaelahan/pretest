@@ -1,4 +1,4 @@
-package config
+package database
 
 import (
 	"gorm.io/driver/mysql"
@@ -9,7 +9,7 @@ import (
 
 var db *gorm.DB
 
-func NewDB() *gorm.DB {
+func New() *gorm.DB {
 	if db != nil {
 		return db
 	}

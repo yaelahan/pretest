@@ -6,10 +6,10 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	_ "github.com/joho/godotenv/autoload"
 	"log"
-	"pretest-indihomesmart/config"
 	"pretest-indihomesmart/exceptions"
+	"pretest-indihomesmart/internal/database"
+	internalValidator "pretest-indihomesmart/internal/validator"
 	"pretest-indihomesmart/routes"
-	"pretest-indihomesmart/utils"
 )
 
 var err error
@@ -18,7 +18,7 @@ func main() {
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
 
 	// setup fiber
-	db := config.NewDB()
+	db := database.New()
 	app := fiber.New(fiber.Config{
 		ErrorHandler: exceptions.ErrorHandler,
 	})
@@ -26,7 +26,7 @@ func main() {
 
 	// setup validator
 	validate := validator.New()
-	customValidator := utils.NewCustomValidator(validate)
+	customValidator := internalValidator.New(validate)
 
 	// register routes
 	routes.NewRouter(app, db, customValidator)

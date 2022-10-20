@@ -1,16 +1,16 @@
-package exceptions
+package validator
 
-type ValidationError struct {
+type Error struct {
 	Message string
 	Errors  interface{}
 }
 
-func (err ValidationError) Error() string {
+func (err Error) Error() string {
 	return err.Message
 }
 
 func NewValidationError(errors interface{}) {
-	panic(ValidationError{
+	panic(Error{
 		Message: "The given data was invalid.",
 		Errors:  errors,
 	})

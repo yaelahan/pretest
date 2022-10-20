@@ -1,4 +1,4 @@
-package utils
+package validator
 
 import (
 	"github.com/go-playground/locales/en"
@@ -10,12 +10,12 @@ import (
 	"strings"
 )
 
-type CustomValidator struct {
+type Validator struct {
 	validate *validator.Validate
 	trans    ut.Translator
 }
 
-func NewCustomValidator(validate *validator.Validate) *CustomValidator {
+func New(validate *validator.Validate) *Validator {
 	// override Field() to get json tag
 	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
 		name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
@@ -36,13 +36,13 @@ func NewCustomValidator(validate *validator.Validate) *CustomValidator {
 		panic(err.Error())
 	}
 
-	return &CustomValidator{
+	return &Validator{
 		validate: validate,
 		trans:    trans,
 	}
 }
 
-func (v *CustomValidator) Validate(s interface{}) interface{} {
+func (v *Validator) Validate(s interface{}) interface{} {
 	var errorValidations []interface{}
 
 	err := v.validate.Struct(s)
@@ -55,13 +55,6 @@ func (v *CustomValidator) Validate(s interface{}) interface{} {
 
 		return errorValidations
 	}
-
-	//if len(errorValidations) > 0 {
-	//	panic(exceptions.ValidationError{
-	//		Message: "Validation has error.",
-	//		Errors:  errorValidations,
-	//	})
-	//}
 
 	return nil
 }
