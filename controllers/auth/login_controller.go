@@ -2,13 +2,14 @@ package auth
 
 import (
 	"github.com/gofiber/fiber/v2"
+	fiberUtils "github.com/gofiber/fiber/v2/utils"
 	"pretest-indihomesmart/entities"
 	"pretest-indihomesmart/exceptions"
 	"pretest-indihomesmart/internal/validator"
 	"pretest-indihomesmart/models"
 	"pretest-indihomesmart/services"
 	"pretest-indihomesmart/utils"
-	"time"
+	"strings"
 )
 
 type LoginController struct {
@@ -17,10 +18,14 @@ type LoginController struct {
 	validator   *validator.Validator
 }
 
-func NewLoginController(userService services.UserService, validator *validator.Validator) LoginController {
+func NewLoginController(
+	userService services.UserService,
+	jwtService services.JwtService,
+	validator *validator.Validator,
+) LoginController {
 	return LoginController{
 		userService: userService,
-		jwtService:  services.NewJwtService(),
+		jwtService:  jwtService,
 		validator:   validator,
 	}
 }
@@ -44,11 +49,22 @@ func (c *LoginController) Login(ctx *fiber.Ctx) error {
 	}
 
 	payload := fiber.Map{
+		"id":    fiberUtils.UUIDv4(),
 		"name":  user.Name,
 		"email": user.Email,
 		"phone": user.Phone,
 	}
-	token, err := c.jwtService.Sign(payload, time.Hour)
+	token, err := c.jwtService.Sign(payload, 60)
 	resp := entities.LoginResponse{Token: token}
 	return ctx.JSON(utils.SuccessResponse("Success", resp))
+}
+
+func (c *LoginController) Logout(ctx *fiber.Ctx) error {
+	authorization := ctx.GetReqHeaders()["Authorization"]
+	tokenString := strings.Split(authorization, "Bearer ")[1]
+
+	err := c.jwtService.Revoke(tokenString)
+	exceptions.PanicIfNeeded(err)
+
+	return ctx.JSON(utils.SuccessResponse("Success", nil))
 }
