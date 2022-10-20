@@ -26,7 +26,7 @@ func main() {
 
 	// setup validator
 	validate := validator.New()
-	customValidator := internalValidator.New(validate)
+	customValidator := internalValidator.New(validate, db)
 
 	// register routes
 	routes.NewRouter(app, db, customValidator)

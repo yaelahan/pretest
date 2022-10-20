@@ -6,6 +6,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	en_translations "github.com/go-playground/validator/v10/translations/en"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
+	"pretest-indihomesmart/internal/validator/custom"
 	"reflect"
 	"strings"
 )
@@ -15,7 +17,7 @@ type Validator struct {
 	trans    ut.Translator
 }
 
-func New(validate *validator.Validate) *Validator {
+func New(validate *validator.Validate, db *gorm.DB) *Validator {
 	// override Field() to get json tag
 	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
 		name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
@@ -30,11 +32,13 @@ func New(validate *validator.Validate) *Validator {
 	// setup default translation
 	english := en.New()
 	uni := ut.New(english, english)
-
 	trans, _ := uni.GetTranslator("en")
 	if err := en_translations.RegisterDefaultTranslations(validate, trans); err != nil {
 		panic(err.Error())
 	}
+
+	// register custom validator
+	custom.Register(validate, trans, db)
 
 	return &Validator{
 		validate: validate,
