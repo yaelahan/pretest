@@ -12,5 +12,6 @@ func NewRouter(app *fiber.App, db *gorm.DB, validator *validator.Validator) {
 	userService := services.NewUserService(db)
 	registerController := auth.NewRegisterController(userService, validator)
 
-	app.Post("/register", registerController.Register)
+	api := app.Group("/api")
+	api.Post("/register", registerController.Register)
 }
