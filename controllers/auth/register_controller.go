@@ -27,7 +27,7 @@ func (c *RegisterController) Register(ctx *fiber.Ctx) error {
 	exceptions.PanicIfNeeded(err)
 
 	if validationError := c.validator.Validate(request); validationError != nil {
-		validator.NewValidationError(validationError)
+		exceptions.NewValidationException(validationError)
 	}
 
 	user := c.userService.Create(request)
