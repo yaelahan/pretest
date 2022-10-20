@@ -7,6 +7,7 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 	"log"
 	"pretest-indihomesmart/exceptions"
+	"pretest-indihomesmart/handlers"
 	"pretest-indihomesmart/internal/database"
 	internalValidator "pretest-indihomesmart/internal/validator"
 	"pretest-indihomesmart/routes"
@@ -20,7 +21,7 @@ func main() {
 	// setup fiber
 	db := database.New()
 	app := fiber.New(fiber.Config{
-		ErrorHandler: exceptions.ErrorHandler,
+		ErrorHandler: handlers.FiberErrorHandler,
 	})
 	app.Use(recover.New())
 

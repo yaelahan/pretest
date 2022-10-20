@@ -18,9 +18,9 @@ func (*jwtService) Sign(payload map[string]interface{}, duration time.Duration) 
 
 	key := os.Getenv("APP_KEY")
 
-	claims := jwt.MapClaims{}
-	claims["exp"] = expiredAt
-	claims["authorization"] = true
+	claims := jwt.MapClaims{
+		"exp": expiredAt,
+	}
 
 	for i, v := range payload {
 		claims[i] = v

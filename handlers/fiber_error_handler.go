@@ -1,4 +1,4 @@
-package exceptions
+package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
@@ -6,8 +6,7 @@ import (
 	"pretest-indihomesmart/utils"
 )
 
-// ErrorHandler fiber
-func ErrorHandler(ctx *fiber.Ctx, err error) error {
+func FiberErrorHandler(ctx *fiber.Ctx, err error) error {
 	var statusCode int
 	var errors interface{}
 
