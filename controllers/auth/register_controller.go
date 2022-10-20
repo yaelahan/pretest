@@ -31,6 +31,11 @@ func (c *RegisterController) Register(ctx *fiber.Ctx) error {
 	}
 
 	user := c.userService.Create(request)
+	resp := entities.RegisterResponse{
+		Name:  user.Name,
+		Email: user.Email,
+		Phone: user.Phone,
+	}
 
-	return ctx.JSON(utils.SuccessResponse(user))
+	return ctx.JSON(utils.SuccessResponse("Success", resp))
 }

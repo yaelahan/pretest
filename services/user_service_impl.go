@@ -18,7 +18,7 @@ func NewUserService(db *gorm.DB) *UserServiceImpl {
 	}
 }
 
-func (service *UserServiceImpl) Create(request entities.RegisterRequest) entities.RegisterResponse {
+func (service *UserServiceImpl) Create(request entities.RegisterRequest) models.User {
 	user := models.User{
 		Name:     request.Name,
 		Email:    request.Email,
@@ -29,9 +29,13 @@ func (service *UserServiceImpl) Create(request entities.RegisterRequest) entitie
 	err := service.db.Create(&user).Error
 	exceptions.PanicIfNeeded(err)
 
-	return entities.RegisterResponse{
-		Name:  user.Name,
-		Email: user.Email,
-		Phone: user.Phone,
-	}
+	return user
+}
+
+func (service *UserServiceImpl) FindByEmail(email string) models.User {
+	user := models.User{}
+
+	service.db.Where(models.User{Email: email}).Find(&user)
+
+	return user
 }

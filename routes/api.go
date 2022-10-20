@@ -11,7 +11,9 @@ import (
 func NewRouter(app *fiber.App, db *gorm.DB, validator *validator.Validator) {
 	userService := services.NewUserService(db)
 	registerController := auth.NewRegisterController(userService, validator)
+	loginController := auth.NewLoginController(userService, validator)
 
 	api := app.Group("/api")
 	api.Post("/register", registerController.Register)
+	api.Post("/login", loginController.Login)
 }

@@ -7,9 +7,10 @@ type Response struct {
 	Data    interface{} `json:"data,omitempty"`
 }
 
-func SuccessResponse(data interface{}) Response {
+func SuccessResponse(message string, data interface{}) Response {
 	return Response{
 		Success: true,
+		Message: message,
 		Data:    data,
 	}
 }
