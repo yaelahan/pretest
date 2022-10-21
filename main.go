@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	_ "github.com/joho/godotenv/autoload"
 	"log"
+	"os"
 	"pretest-indihomesmart/exceptions"
 	"pretest-indihomesmart/handlers"
 	"pretest-indihomesmart/internal/database"
@@ -33,6 +35,7 @@ func main() {
 	routes.NewRouter(app, db, customValidator)
 
 	// start routes
-	err = app.Listen(":1337")
+	port := fmt.Sprintf(":%s", os.Getenv("APP_PORT"))
+	err = app.Listen(port)
 	exceptions.PanicIfNeeded(err)
 }
