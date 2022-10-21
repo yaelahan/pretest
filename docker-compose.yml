@@ -2,6 +2,7 @@ version: "3.9"
 services:
   api:
     build: .
+    restart: unless-stopped
     ports:
       - "1337:1337"
     environment:
@@ -13,13 +14,18 @@ services:
     networks:
       - net
   db:
+    restart: unless-stopped
     image: mysql:8.0.31
     environment:
       - MYSQL_DATABASE=pretest
       - MYSQL_ROOT_PASSWORD=Secret123
     networks:
       - net
-
+    volumes:
+      - dbdata:/var/lib/mysql
 networks:
   net:
     driver: bridge
+
+volumes:
+  dbdata:
