@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  api:
+    build: .
+    ports:
+      - "1337:1337"
+    environment:
+      - APP_KEY=b75f1ac3ac0d4bffa4b48f0d2ecebfef
+      - APP_PORT=1337
+      - DATABASE_URI=root:Secret123@tcp(db)/pretest?parseTime=true
+    depends_on:
+      - db
+    networks:
+      - net
+  db:
+    image: mysql:8.0.31
+    environment:
+      - MYSQL_DATABASE=pretest
+      - MYSQL_ROOT_PASSWORD=Secret123
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge
