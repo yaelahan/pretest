@@ -1,6 +1,6 @@
-version: "3.9"
+version: "3.8"
 services:
-  api:
+  app:
     build: .
     restart: unless-stopped
     ports:
@@ -10,7 +10,8 @@ services:
       - APP_PORT=1337
       - DATABASE_URI=root:Secret123@tcp(db)/pretest?parseTime=true
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - net
   db:
@@ -23,6 +24,10 @@ services:
       - net
     volumes:
       - dbdata:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-pSecret123" ]
+      timeout: 20s
+      retries: 10
 networks:
   net:
     driver: bridge

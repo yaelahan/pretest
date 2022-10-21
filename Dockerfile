@@ -1,5 +1,5 @@
 FROM golang:1.19.2-alpine AS builder
-RUN apk update && apk add --no-cache git
+RUN apk update
 WORKDIR /app
 COPY . .
 RUN go mod download
